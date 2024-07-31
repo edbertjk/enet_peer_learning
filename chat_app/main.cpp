@@ -7,7 +7,7 @@ using namespace std;
 static ChatScreen chatScreen;
 
 void SendPacket(ENetPeer* peer, const char* data){
-    ENetPacket* packet = enet_packet_create(data, strlen(data), ENET_PACKET_FLAG_RELIABLE);
+    ENetPacket* packet = enet_packet_create(data, strlen(data) + 1, ENET_PACKET_FLAG_RELIABLE);
     enet_peer_send(peer, 0, packet);
 }
 
@@ -71,7 +71,7 @@ int main(){
         return EXIT_SUCCESS;
     }
 
-    SendPacket(peer, "Hello World");
+    SendPacket(peer, username);
 
     chatScreen.Init();
 
@@ -81,7 +81,10 @@ int main(){
     while(true){
         string msg = chatScreen.CheckBoxInput();
         chatScreen.PostMessage(username, msg.c_str());
+        SendPacket(peer, msg.c_str());
     }
+
+    pthread_join(thread, NULL);
 
     enet_peer_disconnect(peer, 0);
 
