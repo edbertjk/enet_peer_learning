@@ -13,12 +13,12 @@ void SendPacket(ENetPeer* peer, const char* data){
 
 void* MsgLoop(ENetHost* client){
     while(true){
-        ENetEvent* event;
-        while(enet_host_service(client, event, 0) > 0){
-            switch(event->type){
+        ENetEvent event;
+        while(enet_host_service(client, &event, 0) > 0){
+            switch(event.type){
                 case ENET_EVENT_TYPE_RECEIVE:
-                printf("you got new packet %u with contain data %s in channel %s", event->packet -> dataLength, event->packet -> data, event->channelID);
-                enet_packet_destroy(event->packet);
+                printf("you got new packet %u with contain data %s in channel %s", event.packet -> dataLength, event.packet -> data, event.channelID);
+                enet_packet_destroy(event.packet);
                 break;
             }
         }
@@ -73,11 +73,13 @@ int main(){
 
     SendPacket(peer, username);
 
-    chatScreen.Init();
-
     pthread_t thread;
     pthread_create(&thread, NULL, MsgLoop, client);
+    
+    chatScreen.Init();
 
+    //Create a thread for receiving data
+    
     while(true){
         string msg = chatScreen.CheckBoxInput();
         chatScreen.PostMessage(username, msg.c_str());
@@ -102,5 +104,4 @@ int main(){
     }
 
     return EXIT_SUCCESS;
-    return 0;
 }

@@ -32,8 +32,7 @@ int main(){
                     event.peer -> address.port);
                     break;
                 case ENET_EVENT_TYPE_RECEIVE:
-                    printf("you got new packet %u with contain data %s in channel %s", event.packet -> dataLength, event.packet -> data, event.channelID);
-                    enet_packet_destroy(event.packet);
+                    printf("you got new packet %u with contain data %s in channel %s\n", event.packet -> dataLength, event.packet -> data, event.channelID);
                     break;
                 case ENET_EVENT_TYPE_DISCONNECT:
                     printf("%x:%u disconnected\n", event.peer -> address.host, event.peer -> address.port);
